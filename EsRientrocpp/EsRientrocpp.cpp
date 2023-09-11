@@ -94,16 +94,25 @@ void Ricopia(string lettura, string scrittura)
 
 bool ContrAgg()
 {
-    char* a = new char[1];
+    int j = 0;
     bool b = false;
-    ifstream file("belotti.csv");
-    file.seekg(301);
-    file.read(a, 1);
-    if (a[0] == '#')
+    string m;
+    ifstream fin("belotti.csv");
+    getline(fin, m);
+    stringstream stream(m);
+    getline(stream, m, '\n');
+    for (int i = 0; i < m.length(); i++)
+    {
+        if (m[i] == ';')
+        {
+            j++;
+        }
+    }
+    if (j > 17) 
     {
         b = true;
     }
-    file.close();
+    fin.close();
     return b;
 }
 
@@ -205,7 +214,7 @@ void AggRec(string div[])
     {
         lung = lung + div[i].length();
     }
-    lung = lung + 17;
+    lung = lung + 22;
     file << Record(div, ";", 300, rn, lung, true);
     file.close();
 }
@@ -317,7 +326,7 @@ void ModificaCampo(int campo, string ricerca, string modifica)
     string m;
     string* arr = new string[1000000];
     string* div;
-    int g = 0;
+    int g = 0, lung = 0;
     ifstream file("belotti.csv");
     ofstream app("app.csv");
     while (getline(file, m))
@@ -359,8 +368,13 @@ void ModificaCampo(int campo, string ricerca, string modifica)
         if (div[campo] == ricerca)
         {
             div[campo] = modifica;
+            lung = modifica.length() - div[campo].length();
+            app << Record(div, ";", 300, div[18], m.length() + lung, true);
         }
-        app << Record(div, ";", 300, div[18], m.length(), true);
+        else 
+        {
+            app << Record(div, ";", 300, div[18], m.length(), true);
+        }
     }
 }
 
@@ -480,7 +494,291 @@ void Ricompatta()
 
 int main()
 {
-    Ricompatta();
-    
+    //dichiarazioni
+    int scelta = 0, j = 0, campo;
+    string* div;
+    string* arr;
+    string* ric;
+    int* cvis;
+    bool cor;
+    string cli = "", ricerca, modifica;
+    //menu a scelta
+    do
+    {
+        system("CLS");
+        //opzioni
+        cout << "GESTIONE FILE CSV" << endl;
+        cout << "1. Aggiusta il formato del file" << endl;
+        cout << "2. Conta il numero dei campi del file" << endl;
+        cout << "3. Lunghezza Massima tra i Record" << endl;
+        cout << "4. Aggiunta di un record in coda" << endl;
+        cout << "5. Visualizza tre campi a scelta" << endl;
+        cout << "6. Ricerca in un campo" << endl;
+        cout << "7. Modifica di un record" << endl;
+        cout << "8. Cancellazione logica di un record" << endl;
+        cout << "9. Recupero di un record" << endl;
+        cout << "10. Ricompatta il file" << endl;
+        cout << "11. Visualizza l'intero file" << endl;
+        cout << "0. Esci dal programma" << endl;
+        cin >> scelta;
+        //scelta
+        switch (scelta)
+        {
+            case 1:
+                if (ContrAgg() == false)
+                {
+                    aggiusta();
+                    Ricopia("app.csv", "belotti.csv");
+                    cout << "File aggiustato correttamente" << endl;
+                    cout << "Clicca un tasto per continuare..." << endl;
+                    cin >> cli;
+                }
+                else
+                {
+                    cout << "Operazione già effettuata" << endl;
+                    cout << "Clicca un tasto per continuare..." << endl;
+                    cin >> cli;
+                }
+                break;
+            case 2:
+                cout << "I campi di questo file sono " << ContaCampi() << "." << endl;
+                cout << "Clicca un tasto per continuare..." << endl;
+                cin >> cli;
+                break;
+            case 3:
+                cout << "La lunghezza massima dei record presenti è " << LungMaxRec() << " caratteri." << endl;
+                cout << "Clicca un tasto per continuare..." << endl;
+                cin >> cli;
+                break;
+            case 4:
+                div = new string[18];
+                cout << "Inserisci i campi del nuovo record che vuoi inserire:" << endl;
+                getline(cin, div[0]);
+                cout << "Comune:" << endl;
+                getline(cin, div[0]);
+                cout << "Provincia:" << endl;
+                getline(cin, div[1]);
+                cout << "Regione:" << endl;
+                getline(cin, div[2]);
+                cout << "Tipologia:" << endl;
+                getline(cin, div[3]);
+                cout << "Categoria(Stelle):" << endl;
+                getline(cin, div[4]);
+                cout << "Denominazione:" << endl;
+                getline(cin, div[5]);
+                cout << "Indirizzo:" << endl;
+                getline(cin, div[6]);
+                cout << "CAP:" << endl;
+                getline(cin, div[7]);
+                cout << "Località:" << endl;
+                getline(cin, div[8]);
+                cout << "Frazione:" << endl;
+                getline(cin, div[9]);
+                cout << "Telefono:" << endl;
+                getline(cin, div[10]);
+                cout << "FAX:" << endl;
+                getline(cin, div[11]);
+                cout << "Indirizzo Posta Elettronica:" << endl;
+                getline(cin, div[12]);
+                cout << "Sito Internet:" << endl;
+                getline(cin, div[13]);
+                cout << "Codice esercizio:" << endl;
+                getline(cin, div[14]);
+                cout << "Camere:" << endl;
+                getline(cin, div[15]);
+                cout << "Posti letto standard:" << endl;
+                getline(cin, div[16]);
+                cout << "Posti letto aggiuntivi:" << endl;
+                getline(cin, div[17]);
+                AggRec(div);
+                cout << "Record aggiunto correttamente" << endl;
+                cout << "Clicca un tasto per continuare..." << endl;
+                cin >> cli;
+                break;
+            case 5:
+                cvis = new int[3];
+                cout << "Digita il numero corrispondente ai campi che vuoi visualizzare:" << endl;
+                cout << "0. Comune" << endl;
+                cout << "1. Provincia" << endl;
+                cout << "2. Regione" << endl;
+                cout << "3. Tipologia" << endl;
+                cout << "4. Categoria(Stelle)" << endl;
+                cout << "5. Denominazione" << endl;
+                cout << "6. Indirizzo" << endl;
+                cout << "7. CAP" << endl;
+                cout << "8. Località" << endl;
+                cout << "9. Frazione" << endl;
+                cout << "10. Telefono" << endl;
+                cout << "11. FAX" << endl;
+                cout << "12. Indirizzo Posta Elettronica" << endl;
+                cout << "13. Sito Internet" << endl;
+                cout << "14. Codice esercizio" << endl;
+                cout << "15. Camere" << endl;
+                cout << "16. Posti letto standard" << endl;
+                cout << "17. Posti letto aggiuntivi" << endl;
+                for (int i = 0; i < 3; i++)
+                {
+                    cout << "Inserisci il numero:" << endl;
+                    cin >> cvis[i];
+                }
+                arr = EstrapolaCampi(cvis[0], cvis[1], cvis[2]);
+                j = 0;
+                while (arr[j] != "")
+                {
+                    cout << arr[j] << endl;
+                    j++;
+                }
+                cout << "Clicca un tasto per continuare..." << endl;
+                cin >> cli;
+                break;
+            case 6:
+                ricerca;
+                getline(cin, ricerca);
+                cout << "Inserisci il termine che vuoi ricercare:" << endl;
+                getline(cin, ricerca);
+                cout << "Digita il numero corrispondente al campo in cui vuoi ricercare:" << endl;
+                cout << "0. Comune" << endl;
+                cout << "1. Provincia" << endl;
+                cout << "2. Regione" << endl;
+                cout << "3. Tipologia" << endl;
+                cout << "4. Categoria(Stelle)" << endl;
+                cout << "5. Denominazione" << endl;
+                cout << "6. Indirizzo" << endl;
+                cout << "7. CAP" << endl;
+                cout << "8. Località" << endl;
+                cout << "9. Frazione" << endl;
+                cout << "10. Telefono" << endl;
+                cout << "11. FAX" << endl;
+                cout << "12. Indirizzo Posta Elettronica" << endl;
+                cout << "13. Sito Internet" << endl;
+                cout << "14. Codice esercizio" << endl;
+                cout << "15. Camere" << endl;
+                cout << "16. Posti letto standard" << endl;
+                cout << "17. Posti letto aggiuntivi" << endl;
+                campo;
+                cin >> campo;
+                ric = Ricerca(campo, ricerca);
+                j = 0;
+                while (ric[j] != "")
+                {
+                    cout << ric[j] << endl;
+                    j++;
+                }
+                cout << "Clicca un tasto per continuare..." << endl;
+                cin >> cli;
+                break;
+            case 7:
+                modifica;
+                getline(cin, ricerca);
+                cout << "Inserisci il termine che vuoi modificare:" << endl;
+                getline(cin, ricerca);
+                cout << "Inserisci la modifica da effettuare:" << endl;
+                getline(cin, modifica);
+                cout << "Digita il numero corrispondente al campo in cui vuoi ricercare:" << endl;
+                cout << "0. Comune" << endl;
+                cout << "1. Provincia" << endl;
+                cout << "2. Regione" << endl;
+                cout << "3. Tipologia" << endl;
+                cout << "4. Categoria(Stelle)" << endl;
+                cout << "5. Denominazione" << endl;
+                cout << "6. Indirizzo" << endl;
+                cout << "7. CAP" << endl;
+                cout << "8. Località" << endl;
+                cout << "9. Frazione" << endl;
+                cout << "10. Telefono" << endl;
+                cout << "11. FAX" << endl;
+                cout << "12. Indirizzo Posta Elettronica" << endl;
+                cout << "13. Sito Internet" << endl;
+                cout << "14. Codice esercizio" << endl;
+                cout << "15. Camere" << endl;
+                cout << "16. Posti letto standard" << endl;
+                cout << "17. Posti letto aggiuntivi" << endl;
+                cin >> campo;
+                ModificaCampo(campo, ricerca, modifica);
+                Ricopia("app.csv", "belotti.csv");
+                cout << "Operazione completata" << endl;
+                cout << "Clicca un tasto per continuare..." << endl;
+                cin >> cli;
+                break;
+            case 8:
+                cor = false;
+                getline(cin, ricerca);
+                cout << "Inserisci il termine nel campo del record che vuoi cancellare:" << endl;
+                getline(cin, ricerca);
+                cout << "Digita il numero corrispondente al campo in cui vuoi ricercare:" << endl;
+                cout << "0. Comune" << endl;
+                cout << "1. Provincia" << endl;
+                cout << "2. Regione" << endl;
+                cout << "3. Tipologia" << endl;
+                cout << "4. Categoria(Stelle)" << endl;
+                cout << "5. Denominazione" << endl;
+                cout << "6. Indirizzo" << endl;
+                cout << "7. CAP" << endl;
+                cout << "8. Località" << endl;
+                cout << "9. Frazione" << endl;
+                cout << "10. Telefono" << endl;
+                cout << "11. FAX" << endl;
+                cout << "12. Indirizzo Posta Elettronica" << endl;
+                cout << "13. Sito Internet" << endl;
+                cout << "14. Codice esercizio" << endl;
+                cout << "15. Camere" << endl;
+                cout << "16. Posti letto standard" << endl;
+                cout << "17. Posti letto aggiuntivi" << endl;
+                cin >> campo;
+                CancRecLogica(campo, ricerca, cor);
+                Ricopia("app.csv", "belotti.csv");
+                cout << "Operazione completata" << endl;
+                cout << "Clicca un tasto per continuare..." << endl;
+                cin >> cli;
+                break;
+            case 9:
+                cor = true;
+                getline(cin, ricerca);
+                cout << "Inserisci il termine nel campo del record che vuoi recuperare:" << endl;
+                getline(cin, ricerca);
+                cout << "Digita il numero corrispondente al campo in cui vuoi ricercare:" << endl;
+                cout << "0. Comune" << endl;
+                cout << "1. Provincia" << endl;
+                cout << "2. Regione" << endl;
+                cout << "3. Tipologia" << endl;
+                cout << "4. Categoria(Stelle)" << endl;
+                cout << "5. Denominazione" << endl;
+                cout << "6. Indirizzo" << endl;
+                cout << "7. CAP" << endl;
+                cout << "8. Località" << endl;
+                cout << "9. Frazione" << endl;
+                cout << "10. Telefono" << endl;
+                cout << "11. FAX" << endl;
+                cout << "12. Indirizzo Posta Elettronica" << endl;
+                cout << "13. Sito Internet" << endl;
+                cout << "14. Codice esercizio" << endl;
+                cout << "15. Camere" << endl;
+                cout << "16. Posti letto standard" << endl;
+                cout << "17. Posti letto aggiuntivi" << endl;
+                cin >> campo;
+                CancRecLogica(campo, ricerca, cor);
+                Ricopia("app.csv", "belotti.csv");
+                cout << "Operazione completata" << endl;
+                cout << "Clicca un tasto per continuare..." << endl;
+                cin >> cli;
+                break;
+            case 10:
+                Ricompatta();
+                Ricopia("app.csv", "belotti.csv");
+                cout << "Ricompattamento del file completato" << endl;
+                cout << "Clicca un tasto per continuare..." << endl;
+                cin >> cli;
+                break;
+            case 11:
+                Visualizza("belotti.csv");
+                cout << "Clicca un tasto per continuare..." << endl;
+                cin >> cli;
+                break;
+            case 0:
+                break;
+            default:
+                break;
+            }
+    } while (scelta != 0);
     return 0;
 }
