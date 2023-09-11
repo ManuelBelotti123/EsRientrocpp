@@ -29,7 +29,7 @@ struct str {
     string c;
 };
 
-string Record(string div[], string sp, int l, string random)
+string Record(string div[], string sp, int l, string random, int llinea)
 {
     str r;
     r.comune = div[0];
@@ -53,10 +53,8 @@ string Record(string div[], string sp, int l, string random)
     r.c = "1";
     //stabiliamo una lunghezza fissa per ogni record
     ostringstream rec;
-    rec << r.comune << sp << r.prov << sp << r.reg << sp << r.tip << sp << r.stelle << sp << r.den << sp << r.ind << sp << r.cap << sp << r.local << sp << r.fraz << sp << r.tel << sp << r.fax << sp << r.posel << sp << r.web << sp << r.ces << sp << r.cam << sp << r.pls << sp << r.pla << sp << random << sp << r.c << ']' << "##\r\n";
-    string record = rec.str();
-    (record, 300)
-    return 
+    rec << r.comune << sp << r.prov << sp << r.reg << sp << r.tip << sp << r.stelle << sp << r.den << sp << r.ind << sp << r.cap << sp << r.local << sp << r.fraz << sp << r.tel << sp << r.fax << sp << r.posel << sp << r.web << sp << r.ces << sp << r.cam << sp << r.pls << sp << r.pla << sp << random << sp << r.c << ']' << setw(l - llinea) << "##\r\n";
+    return rec.str();
 }
 
 void Visualizza(string nomefile)
@@ -140,7 +138,7 @@ void aggiusta()
         div[16] = m.substr(pos[15] + 1, pos[16] - pos[15]);
         div[17] = m.substr(pos[16] + 1, pos[17] - pos[16]);
         div[18] = m.substr(pos[17] + 1, pos[18] - pos[17]);
-        cout << Record(div, ";", 300, random);
+        cout << Record(div, ";", 300, random, m.length());
     }
     cout << endl;
     file.close();
