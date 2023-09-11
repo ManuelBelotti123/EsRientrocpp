@@ -105,7 +105,6 @@ void aggiusta()
     string m;
     ifstream file("belotti.csv");
     ofstream app("app.csv");
-    int r = 0;
     while (getline(file, m))
     {
         string random = to_string(rand() % 11 + 10);
@@ -144,7 +143,6 @@ void aggiusta()
         div[17] = m.substr(pos[16] + 1, pos[17] - pos[16] - 1);
         div[18] = m.substr(pos[17] + 1, pos[18] - pos[17] - 1);
         app << Record(div, ";", 300, random, m.length());
-        r++;
     }
     file.close();
     app.close();
@@ -158,7 +156,6 @@ int ContaCampi()
     getline(file, m);
     stringstream stream(m);
     getline(stream, m, '\n');
-    cout << m << endl;
     for (int i = 0; i < m.length(); i++)
     {
         if (m[i] == ';')
@@ -170,10 +167,44 @@ int ContaCampi()
     return j + 1;
 }
 
+int LungMaxRec() 
+{
+    string m;
+    ifstream file("belotti.csv");
+    int max = 0;
+    while (getline(file, m))
+    {
+        string random = to_string(rand() % 11 + 10);
+        int pos[] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+        string div[] = { "","", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };
+        int j = 0;
+        stringstream stream(m);
+        getline(stream, m, ']');
+        if (m.length() > max) 
+        {
+            max = m.length();
+        }
+    }
+    file.close();
+    return max + 1;
+}
+
+void AggRec(string div[])
+{
+    int lung = 0;
+    string rn = to_string(rand() % 11 + 10);
+    ofstream file("belotti.csv", ios::app);
+    for (int i = 0; i < 18; i++) 
+    {
+        lung = lung + div[i].length();
+    }
+    lung = lung + 17;
+    file << Record(div, ";", 300, rn, lung);
+    file.close();
+}
+
 int main()
 {
-    aggiusta();
-    Ricopia("app.csv", "belotti.csv");
-    cout << ContaCampi();
+
     return 0;
 }
