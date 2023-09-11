@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <cstring>
+#include <sstream>
 #include <fstream>
 #include <iomanip>
 using namespace std;
@@ -50,29 +52,103 @@ string Record(string div[], string sp, int l, string random)
     r.pla = div[17];
     r.c = "1";
     //stabiliamo una lunghezza fissa per ogni record
-    return (r.comune + sp + r.prov + sp + r.reg + sp + r.tip + sp + r.stelle + sp + r.den + sp + r.ind + sp + r.cap + sp + r.local + sp + r.fraz + sp + r.tel + sp + r.fax + sp + r.posel + sp + r.web + sp + r.ces + sp + r.cam + sp + r.pls + sp + r.pla + sp + random + sp + r.c + ']'), setw(l), "##\r\n";
-
+    ostringstream rec;
+    rec << r.comune << sp << r.prov << sp << r.reg << sp << r.tip << sp << r.stelle << sp << r.den << sp << r.ind << sp << r.cap << sp << r.local << sp << r.fraz << sp << r.tel << sp << r.fax << sp << r.posel << sp << r.web << sp << r.ces << sp << r.cam << sp << r.pls << sp << r.pla << sp << random << sp << r.c << ']' << "##\r\n";
+    string record = rec.str();
+    (record, 300)
+    return 
 }
 
-public bool ContrAgg()
+void Visualizza(string nomefile)
 {
-    int a;
+    string m;
+    ifstream file(nomefile);
+    while (file >> m)
+    {
+        getline(file, m, ']');
+        cout << m << endl;
+    }
+    cout << endl;
+    file.close();
+}
+
+void Ricopia(string file1, string file2)
+{
+    string m;
+    ifstream file(file1);
+    ofstream app(file2);
+    while (file >> m)
+    {
+        app << m << endl;
+    }
+    file.close();
+    app.close();
+}
+
+bool ContrAgg()
+{
+    char* a = new char[1];
     bool b = false;
-    var file = new FileStream("belotti.csv", FileMode.Open, FileAccess.ReadWrite, FileShare.Read);
-    BinaryReader rd = new BinaryReader(file);
-    file.Seek(301, SeekOrigin.Begin);
-    a = rd.Read();
-    if (a == 35)
+    ifstream file("belotti.csv");
+    file.seekg(301);
+    file.read(a, 1);
+    if (a[0] == '#')
     {
         b = true;
     }
-    rd.Close();
-    file.Close();
+    file.close();
     return b;
+}
+
+void aggiusta()
+{
+    string m;
+    ifstream file("belotti.csv");
+    while (file >> m)
+    {
+        string random = to_string(rand() % 11 + 10);
+        int pos[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+        string div[] = { "","", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };
+        int j = 0;
+        getline(file, m, ']');
+        for (int i = 0; i < m.length(); i++) 
+        {
+            if (m[i] == ';') 
+            {
+                pos[j] = i;
+                j++;
+            }
+        }
+        int k = 0;
+        int f = 1;
+        div[0] = m.substr(0, pos[0]);
+        div[1] = m.substr(pos[0] + 1, pos[1] - pos[0]);
+        div[2] = m.substr(pos[1] + 1, pos[2] - pos[1]);
+        div[3] = m.substr(pos[2] + 1, pos[3] - pos[2]);
+        div[4] = m.substr(pos[3] + 1, pos[4] - pos[3]);
+        div[5] = m.substr(pos[4] + 1, pos[5] - pos[4]);
+        div[6] = m.substr(pos[5] + 1, pos[6] - pos[5]);
+        div[7] = m.substr(pos[6] + 1, pos[7] - pos[6]);
+        div[8] = m.substr(pos[7] + 1, pos[8] - pos[7]);
+        div[9] = m.substr(pos[8] + 1, pos[9] - pos[8]);
+        div[10] = m.substr(pos[9] + 1, pos[10] - pos[9]);
+        div[11] = m.substr(pos[10] + 1, pos[11] - pos[10]);
+        div[12] = m.substr(pos[11] + 1, pos[12] - pos[11]);
+        div[13] = m.substr(pos[12] + 1, pos[13] - pos[12]);
+        div[14] = m.substr(pos[13] + 1, pos[14] - pos[13]);
+        div[15] = m.substr(pos[14] + 1, pos[15] - pos[14]);
+        div[16] = m.substr(pos[15] + 1, pos[16] - pos[15]);
+        div[17] = m.substr(pos[16] + 1, pos[17] - pos[16]);
+        div[18] = m.substr(pos[17] + 1, pos[18] - pos[17]);
+        cout << Record(div, ";", 300, random);
+    }
+    cout << endl;
+    file.close();
 }
 
 int main()
 {
-    
+    aggiusta();
+    return 0;
 }
 
