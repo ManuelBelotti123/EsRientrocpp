@@ -63,24 +63,26 @@ void Visualizza(string nomefile)
     ifstream file(nomefile);
     while (getline(file, m))
     {
-        getline(file, m, ']');
+        stringstream stream(m);
+        getline(stream, m, '\n');
         cout << m << endl;
     }
     cout << endl;
     file.close();
 }
 
-void Ricopia(string file1, string file2)
+void Ricopia(string lettura, string scrittura)
 {
     string m;
-    ifstream file(file1);
-    ofstream app(file2);
-    while (getline(file, m))
+    ifstream fin(lettura);
+    ofstream fout(scrittura);
+    while (getline(fin, m))
     {
-        app << m << endl;
+        stringstream stream(m);
+        getline(stream, m, '\n');
+        fout << m << endl;
     }
-    file.close();
-    app.close();
+    fin.close();
 }
 
 bool ContrAgg()
@@ -123,24 +125,24 @@ void aggiusta()
         int k = 0;
         int f = 1;
         div[0] = m.substr(0, pos[0]);
-        div[1] = m.substr(pos[0] + 1, pos[1] - pos[0]);
-        div[2] = m.substr(pos[1] + 1, pos[2] - pos[1]);
-        div[3] = m.substr(pos[2] + 1, pos[3] - pos[2]);
-        div[4] = m.substr(pos[3] + 1, pos[4] - pos[3]);
-        div[5] = m.substr(pos[4] + 1, pos[5] - pos[4]);
-        div[6] = m.substr(pos[5] + 1, pos[6] - pos[5]);
-        div[7] = m.substr(pos[6] + 1, pos[7] - pos[6]);
-        div[8] = m.substr(pos[7] + 1, pos[8] - pos[7]);
-        div[9] = m.substr(pos[8] + 1, pos[9] - pos[8]);
-        div[10] = m.substr(pos[9] + 1, pos[10] - pos[9]);
-        div[11] = m.substr(pos[10] + 1, pos[11] - pos[10]);
-        div[12] = m.substr(pos[11] + 1, pos[12] - pos[11]);
-        div[13] = m.substr(pos[12] + 1, pos[13] - pos[12]);
-        div[14] = m.substr(pos[13] + 1, pos[14] - pos[13]);
-        div[15] = m.substr(pos[14] + 1, pos[15] - pos[14]);
-        div[16] = m.substr(pos[15] + 1, pos[16] - pos[15]);
-        div[17] = m.substr(pos[16] + 1, pos[17] - pos[16]);
-        div[18] = m.substr(pos[17] + 1, pos[18] - pos[17]);
+        div[1] = m.substr(pos[0] + 1, pos[1] - pos[0] - 1);
+        div[2] = m.substr(pos[1] + 1, pos[2] - pos[1] - 1);
+        div[3] = m.substr(pos[2] + 1, pos[3] - pos[2] - 1);
+        div[4] = m.substr(pos[3] + 1, pos[4] - pos[3] - 1);
+        div[5] = m.substr(pos[4] + 1, pos[5] - pos[4] - 1);
+        div[6] = m.substr(pos[5] + 1, pos[6] - pos[5] - 1);
+        div[7] = m.substr(pos[6] + 1, pos[7] - pos[6] - 1);
+        div[8] = m.substr(pos[7] + 1, pos[8] - pos[7] - 1);
+        div[9] = m.substr(pos[8] + 1, pos[9] - pos[8] - 1);
+        div[10] = m.substr(pos[9] + 1, pos[10] - pos[9] - 1);
+        div[11] = m.substr(pos[10] + 1, pos[11] - pos[10] - 1);
+        div[12] = m.substr(pos[11] + 1, pos[12] - pos[11] - 1);
+        div[13] = m.substr(pos[12] + 1, pos[13] - pos[12] - 1);
+        div[14] = m.substr(pos[13] + 1, pos[14] - pos[13] - 1);
+        div[15] = m.substr(pos[14] + 1, pos[15] - pos[14] - 1);
+        div[16] = m.substr(pos[15] + 1, pos[16] - pos[15] - 1);
+        div[17] = m.substr(pos[16] + 1, pos[17] - pos[16] - 1);
+        div[18] = m.substr(pos[17] + 1, pos[18] - pos[17] - 1);
         app << Record(div, ";", 300, random, m.length());
         r++;
     }
@@ -148,8 +150,30 @@ void aggiusta()
     app.close();
 }
 
+int ContaCampi()
+{
+    ifstream file("belotti.csv");
+    string m;
+    int j = 0;
+    getline(file, m);
+    stringstream stream(m);
+    getline(stream, m, '\n');
+    cout << m << endl;
+    for (int i = 0; i < m.length(); i++)
+    {
+        if (m[i] == ';')
+        {
+            j++;
+        }
+    }
+    file.close();
+    return j + 1;
+}
+
 int main()
 {
     aggiusta();
+    Ricopia("app.csv", "belotti.csv");
+    cout << ContaCampi();
     return 0;
 }
