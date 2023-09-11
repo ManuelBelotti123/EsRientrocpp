@@ -203,8 +203,59 @@ void AggRec(string div[])
     file.close();
 }
 
+string* EstrapolaCampi(int a, int b, int c) 
+{
+    string m;
+    string* arr = new string[1000000];
+    string* div;
+    int i = 0;
+    ifstream file("belotti.csv");
+    while (getline(file, m))
+    {
+        int pos[] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+        string div[] = { "","", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };
+        int j = 0;
+        stringstream stream(m);
+        getline(stream, m, ']');
+        for (int i = 0; i < m.length(); i++)
+        {
+            if (m[i] == ';')
+            {
+                pos[j] = i;
+                j++;
+            }
+        }
+        int k = 0;
+        int f = 1;
+        div[0] = m.substr(0, pos[0]);
+        div[1] = m.substr(pos[0] + 1, pos[1] - pos[0] - 1);
+        div[2] = m.substr(pos[1] + 1, pos[2] - pos[1] - 1);
+        div[3] = m.substr(pos[2] + 1, pos[3] - pos[2] - 1);
+        div[4] = m.substr(pos[3] + 1, pos[4] - pos[3] - 1);
+        div[5] = m.substr(pos[4] + 1, pos[5] - pos[4] - 1);
+        div[6] = m.substr(pos[5] + 1, pos[6] - pos[5] - 1);
+        div[7] = m.substr(pos[6] + 1, pos[7] - pos[6] - 1);
+        div[8] = m.substr(pos[7] + 1, pos[8] - pos[7] - 1);
+        div[9] = m.substr(pos[8] + 1, pos[9] - pos[8] - 1);
+        div[10] = m.substr(pos[9] + 1, pos[10] - pos[9] - 1);
+        div[11] = m.substr(pos[10] + 1, pos[11] - pos[10] - 1);
+        div[12] = m.substr(pos[11] + 1, pos[12] - pos[11] - 1);
+        div[13] = m.substr(pos[12] + 1, pos[13] - pos[12] - 1);
+        div[14] = m.substr(pos[13] + 1, pos[14] - pos[13] - 1);
+        div[15] = m.substr(pos[14] + 1, pos[15] - pos[14] - 1);
+        div[16] = m.substr(pos[15] + 1, pos[16] - pos[15] - 1);
+        div[17] = m.substr(pos[16] + 1, pos[17] - pos[16] - 1);
+        div[18] = m.substr(pos[17] + 1, pos[18] - pos[17] - 1);
+        arr[j] = div[a] + ';' + div[b] + ';' + div[c];
+        cout << arr[j] << endl;
+        j++;
+    }
+    return arr;
+}
+
 int main()
 {
+    EstrapolaCampi(0, 4, 7);
 
     return 0;
 }
