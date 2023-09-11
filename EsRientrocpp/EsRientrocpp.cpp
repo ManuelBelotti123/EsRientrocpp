@@ -61,7 +61,7 @@ void Visualizza(string nomefile)
 {
     string m;
     ifstream file(nomefile);
-    while (file >> m)
+    while (getline(file, m))
     {
         getline(file, m, ']');
         cout << m << endl;
@@ -75,7 +75,7 @@ void Ricopia(string file1, string file2)
     string m;
     ifstream file(file1);
     ofstream app(file2);
-    while (file >> m)
+    while (getline(file, m))
     {
         app << m << endl;
     }
@@ -102,16 +102,19 @@ void aggiusta()
 {
     string m;
     ifstream file("belotti.csv");
-    while (file >> m)
+    ofstream app("app.csv");
+    int r = 0;
+    while (getline(file, m))
     {
         string random = to_string(rand() % 11 + 10);
-        int pos[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+        int pos[] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
         string div[] = { "","", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };
         int j = 0;
-        getline(file, m, ']');
-        for (int i = 0; i < m.length(); i++) 
+        stringstream stream(m);
+        getline(stream, m, '\n');
+        for (int i = 0; i < m.length(); i++)
         {
-            if (m[i] == ';') 
+            if (m[i] == ';')
             {
                 pos[j] = i;
                 j++;
@@ -138,10 +141,11 @@ void aggiusta()
         div[16] = m.substr(pos[15] + 1, pos[16] - pos[15]);
         div[17] = m.substr(pos[16] + 1, pos[17] - pos[16]);
         div[18] = m.substr(pos[17] + 1, pos[18] - pos[17]);
-        cout << Record(div, ";", 300, random, m.length());
+        app << Record(div, ";", 300, random, m.length());
+        r++;
     }
-    cout << endl;
     file.close();
+    app.close();
 }
 
 int main()
@@ -149,4 +153,3 @@ int main()
     aggiusta();
     return 0;
 }
-
